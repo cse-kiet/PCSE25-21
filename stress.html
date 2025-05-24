@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>MindWell | Stress Assessment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: #2b2d42;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .question {
+            margin-bottom: 20px;
+            background: #f1f3f5;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+        button {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1><i class="fas fa-brain"></i> Stress Assessment</h1>
+    <form method="post" action="/predict" id="stressForm">
+        {% for i in range(questions|length) %}
+        <div class="question">
+            <p>{{ i+1 }}. {{ questions[i] }}</p>
+            <label><input type="radio" name="q{{ i }}" value="1" required> Yes</label>
+            <label><input type="radio" name="q{{ i }}" value="0"> No</label>
+        </div>
+        {% endfor %}
+
+        <div class="question">
+            <label for="location">Your City:</label>
+            <input type="text" name="location" id="location" placeholder="e.g., Delhi, Mumbai" required />
+        </div>
+
+        <div class="actions">
+            <button type="submit"><i class="fas fa-paper-plane"></i> Submit Assessment</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
