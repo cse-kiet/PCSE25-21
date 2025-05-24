@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Stress Assessment Result</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet"/>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #f8f9fa; padding: 20px; }
+        .container { max-width: 700px; margin: auto; background: white; padding: 30px; border-radius: 12px; }
+        h1 { color: #2575fc; }
+        .therapist { margin-top: 15px; padding: 15px; background: #e7f0fd; border-radius: 8px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Stress Assessment Result</h1>
+    <p>Your stress score is: <strong>{{ score }}</strong></p>
+
+    {% if prediction == 1 %}
+    <p><strong>Warning:</strong> Your responses suggest you might be experiencing significant stress.</p>
+    {% else %}
+    <p>Good news! Your responses suggest your stress level is manageable.</p>
+    {% endif %}
+
+    <h2>Therapists in {{ location }}</h2>
+    {% if therapists %}
+        {% for t in therapists %}
+        <div class="therapist">
+            <h3>{{ t.name }}</h3>
+            <p>Specialty: {{ t.specialty }}</p>
+            <p>Clinic: {{ t.clinic }}</p>
+            <p>Phone: {{ t.phone }}</p>
+            <p>Website: <a href="https://{{ t.website }}" target="_blank">{{ t.website }}</a></p>
+        </div>
+        {% endfor %}
+    {% else %}
+    <p>No therapists found for your location. Please try a nearby city.</p>
+    {% endif %}
+
+    <a href="/stress-prediction">Take the assessment again</a>
+</div>
+</body>
+</html>
