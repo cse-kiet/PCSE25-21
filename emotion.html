@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MindWell | Emotion Detection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #6a11cb;
+      --secondary: #2575fc;
+      --danger: #ff6b6b;
+      --success: #51cf66;
+      --warning: #fcc419;
+      --text: #2b2d42;
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --modal-bg: #ffffff;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+    .dark-mode {
+      --text: #f8f9fa;
+      --bg: #121212;
+      --card-bg: #1e1e1e;
+      --modal-bg: #2d2d2d;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: var(--transition);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 2.2rem;
+    }
+    .tab-container {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .tab-button {
+      flex: 1;
+      padding: 12px;
+      cursor: pointer;
+      text-align: center;
+      font-weight: 500;
+      font-size: 16px;
+      background: var(--card-bg);
+      color: var(--text);
+      border: none;
+      border-bottom: 2px solid transparent;
+      border-radius: 5px 5px 0 0;
+      transition: var(--transition);
+    }
+    .tab-button:hover {
+      background: rgba(106, 17, 203, 0.1);
+      border-bottom-color: var(--primary);
+    }
+    .tab-button.active {
+      background: var(--primary);
+      color: white;
+      border-bottom-color: var(--primary);
+    }
+    .tab-content {
+      display: none;
+      padding: 20px;
+      border-radius: 0 0 10px 10px;
+      background: var(--card-bg);
+    }
+    .tab-content.active {
+      display: block;
+    }
+    #upload-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .file-upload-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      background: rgba(106, 17, 203, 0.1);
+      border-radius: 50px;
+      padding: 8px 15px;
+      border: 2px dashed var(--primary);
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    #file-input {
+      opacity: 0;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+    .file-name {
+      margin-left: 10px;
+      font-size: 16px;
+      color: var(--text);
+      max-width: 200px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .camera-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #video-feed {
+      border: 2px solid var(--primary);
+      border-radius: 10px;
+      width: 100%;
+      max-width: 600px;
+      aspect-ratio: 4/3;
+    }
+    .btn, #capture-button, #live-detection-button {
+      margin-top: 20px;
+      padding: 12px 25px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+      transition: var(--transition);
+    }
+    .btn:hover, #capture-button:hover, #live-detection-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(106, 17, 203, 0.4);
+    }
+    .feedback {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+      min-height: 30px;
+    }
+    .feedback-image {
+      margin-top: 20px;
+      max-width: 100%;
+      border-radius: 10px;
+      border: 2px solid var(--primary);
+      display: none;
+    }
+    .emotion-bar-container {
+      margin-top: 20px;
+      width: 100%;
+      max-width: 600px;
+    }
+    .emotion-bar {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .emotion-label {
+      width: 100px;
+      font-weight: 500;
+      text-align: right;
+      padding-right: 10px;
+    }
+    .emotion-progress {
+      flex-grow: 1;
+      height: 20px;
+      background-color: rgba(106, 17, 203, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .emotion-fill {
+      height: 100%;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      border-radius: 10px;
+      transition: width 0.3s ease;
+    }
+    .emotion-percentage {
+      width: 60px;
+      text-align: right;
+      padding-left: 10px;
+    }
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s ease-in-out infinite;
+    }
+    .loading-text {
+      color: white;
+      margin-top: 20px;
+      font-size: 18px;
+    }
+    .dark-mode-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+      font-size: 24px;
+      color: var(--text);
+      z-index: 100;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @media (max-width: 768px) {
+      .tab-container {
+        flex-direction: column;
+      }
+      .tab-button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dark-mode-toggle" onclick="toggleDarkMode()">
+    <i id="darkIcon" class="fas fa-moon"></i>
+  </div>
+  
+  <div id="loading" class="loading-overlay">
+    <div style="text-align: center;">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Processing...</div>
+    </div>
+  </div>
+  
+  <div class="container">
+    <h1><i class="fas fa-brain"></i> MindWell Emotion Detection</h1>
+    <div class="tab-container">
+      <div class="tab-button active" data-tab="upload">Upload Image</div>
+      <div class="tab-button" data-tab="camera">Use Camera</div>
+    </div>
+    <div id="upload" class="tab-content active">
+      <form id="upload-form" enctype="multipart/form-data">
+        <label for="file-input" class="file-upload-wrapper">
+          <i class="fas fa-upload"></i>
+          <span class="file-name">Choose File</span>
+          <input type="file" id="file-input" name="image" accept="image/*" />
+        </label>
+        <button type="submit" class="btn">Analyze Image</button>
+      </form>
+      <div id="upload-feedback" class="feedback"></div>
+      <img id="image-preview" class="feedback-image" src="#" alt="Uploaded Preview" />
+      <div id="upload-emotion-bar-container" class="emotion-bar-container"></div>
+    </div>
+    <div id="camera" class="tab-content">
+      <div class="camera-container">
+        <video id="video-feed" autoplay playsinline></video>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+          <button id="capture-button">Capture and Analyze</button>
+          <button id="live-detection-button">Start Live Detection</button>
+        </div>
+        <canvas id="canvas" style="display: none;"></canvas>
+        <img id="captured-image" class="feedback-image" src="#" alt="Captured Image" />
+      </div>
+      <div id="camera-feedback" class="feedback"></div>
+      <div id="camera-emotion-bar-container" class="emotion-bar-container"></div>
+    </div>
+  </div>
+  
+  <script>
+    // DOM elements
+    const fileInput = document.getElementById('file-input');
+    const fileNameLabel = document.querySelector('.file-name');
+    const imagePreview = document.getElementById('image-preview');
+    const capturedImage = document.getElementById('captured-image');
+    const uploadFeedback = document.getElementById('upload-feedback');
+    const cameraFeedback = document.getElementById('camera-feedback');
+    const uploadForm = document.getElementById('upload-form');
+    const videoFeed = document.getElementById('video-feed');
+    const captureButton = document.getElementById('capture-button');
+    const liveDetectionButton = document.getElementById('live-detection-button');
+    const canvas = document.getElementById('canvas');
+    const uploadEmotionBarContainer = document.getElementById('upload-emotion-bar-container');
+    const cameraEmotionBarContainer = document.getElementById('camera-emotion-bar-container');
+    const loadingOverlay = document.getElementById('loading');
+    
+    let stream;
+    let isLiveDetectionRunning = false;
+    let liveDetectionInterval = null;
+    
+    // Toggle dark mode
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      const icon = document.getElementById('darkIcon');
+      icon.classList.toggle('fa-moon');
+      icon.classList.toggle('fa-sun');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    }
+    
+    // Check if dark mode was previously enabled
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark-mode');
+      document.getElementById('darkIcon').classList.replace('fa-moon', 'fa-sun');
+    }
+    
+    // Tab switching logic
+    document.querySelectorAll('.tab-button').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        button.classList.add('active');
+        document.getElementById(button.getAttribute('data-tab')).classList.add('active');
+        
+        // Stop live detection if switching away from camera tab
+        if (button.getAttribute('data-tab') !== 'camera' && isLiveDetectionRunning) {
+          stopLiveDetection();
+        }
+      });
+    });
+    
+    // Display emotion results with bars
+    function displayEmotionResults(results, feedbackElement, barContainer) {
+      if (results.error) {
+        feedbackElement.textContent = `Error: ${results.error}`;
+        return;
+      }
+      
+      const emotion = results.emotion;
+      const probability = results.probability;
+      const probabilities = results.probabilities;
+      
+      // Display the main emotion and probability
+      feedbackElement.textContent = `Detected Emotion: ${emotion} (${(probability * 100).toFixed(1)}%)`;
+      
+      // Create emotion bars
+      let emotionBars = '';
+      
+      for (const [emotion, probability] of Object.entries(probabilities)) {
+        const percentage = (probability * 100).toFixed(1);
+        
+        // Create emotion bar
+        const barHtml = `
+          <div class="emotion-bar">
+            <div class="emotion-label">${emotion}</div>
+            <div class="emotion-progress">
+              <div class="emotion-fill" style="width: ${percentage}%;"></div>
+            </div>
+            <div class="emotion-percentage">${percentage}%</div>
+          </div>
+        `;
+        
+        emotionBars += barHtml;
+      }
+      
+      barContainer.innerHTML = emotionBars;
+    }
+    
+    // File input change handler
+    fileInput.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          imagePreview.src = e.target.result;
+          imagePreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+        fileNameLabel.textContent = file.name.length > 20 
+            ? file.name.substring(0, 17) + '...' 
+            : file.name;
+      } else {
+        fileNameLabel.textContent = 'Choose File';
+        imagePreview.style.display = 'none';
+      }
+    });
+    
+    // Upload form submit handler
+    uploadForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      
+      if (!fileInput.files[0]) {
+        uploadFeedback.textContent = 'Please select an image to analyze.';
+        return;
+      }
+      
+      loadingOverlay.style.display = 'flex';
+      
+      try {
+        const formData = new FormData(uploadForm);
+        
+        const response = await fetch('/analyze_image', {
+          method: 'POST',
+          body: formData
+        });
+        
+        const results = await response.json();
+        
+        // Display results
+        displayEmotionResults(results, uploadFeedback, uploadEmotionBarContainer);
+        
+      } catch (error) {
+        console.error('Error:', error);
+        uploadFeedback.textContent = 'Error analyzing image. Please try again.';
+      } finally {
+        loadingOverlay.style.display = 'none';
+      }
+    });
+    
+    // Initialize camera
+    async function initCamera() {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { 
+            facingMode: 'user',
+            width: { ideal: 640 },
+            height: { ideal: 480 }
+          } 
+        });
+        videoFeed.srcObject = stream;
+      } catch (err) {
+        console.error('Camera error:', err);
+        cameraFeedback.textContent = 'Camera access denied. Please allow camera access and refresh the page.';
+        document.getElementById('camera').innerHTML += '<p style="color:var(--danger); text-align: center;">Camera access is required for this feature.</p>';
+      }
+    }
+    
+    // Capture button click handler
+    captureButton.addEventListener('click', async () => {
+      if (!videoFeed.srcObject) {
+        cameraFeedback.textContent = 'Camera not available.';
+        return;
+      }
+      
+      // Stop live detection if it's running
+      if (isLiveDetectionRunning) {
+        stopLiveDetection();
+      }
+      
+      // Set canvas dimensions to match video
+      canvas.width = videoFeed.videoWidth;
+      canvas.height = videoFeed.videoHeight;
+      
+      // Draw current video frame to canvas
+      canvas.getContext('2d').drawImage(videoFeed, 0, 0, canvas.width, canvas.height);
+      
+      // Get image data from canvas as base64
+      const imageData = canvas.toDataURL('image/jpeg');
+      
+      // Display captured image
+      capturedImage.src = imageData;
+      capturedImage.style.display = 'block';
+      
+      // Process the image
+      await analyzeWebcamImage(imageData);
+    });
+    
+    // Process webcam image
+    async function analyzeWebcamImage(imageData) {
+      loadingOverlay.style.display = 'flex';
+      
+      try {
+        const response = await fetch('/analyze_webcam', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ image: imageData })
+        });
+        
+        const results = await response.json();
+        
+        // Display results
+        displayEmotionResults(results, cameraFeedback, cameraEmotionBarContainer);
+        
+      } catch (error) {
+        console.error('Error:', error);
+        cameraFeedback.textContent = 'Error analyzing image. Please try again.';
+      } finally {
+        loadingOverlay.style.display = 'none';
+      }
+    }
+    
+    // Live detection toggle
+    liveDetectionButton.addEventListener('click', () => {
+      if (isLiveDetectionRunning) {
+        stopLiveDetection();
+        liveDetectionButton.textContent = 'Start Live Detection';
+        capturedImage.style.display = 'none';
+      } else {
+        startLiveDetection();
+        liveDetectionButton.textContent = 'Stop Live Detection';
+      }
+    });
+    
+    // Start live emotion detection
+    function startLiveDetection() {
+      if (!videoFeed.srcObject) {
+        cameraFeedback.textContent = 'Camera not available.';
+        return;
+      }
+      
+      isLiveDetectionRunning = true;
+      
+      // Set canvas dimensions to match video
+      canvas.width = videoFeed.videoWidth;
+      canvas.height = videoFeed.videoHeight;
+      
+      // Start detection loop
+      liveDetectionInterval = setInterval(async () => {
+        // Draw current video frame to canvas
+        canvas.getContext('2d').drawImage(videoFeed, 0, 0, canvas.width, canvas.height);
+        
+        // Get image data from canvas as base64
+        const imageData = canvas.toDataURL('image/jpeg');
+        
+        // Process the image without showing loading overlay
+        try {
+          const response = await fetch('/analyze_webcam', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ image: imageData })
+          });
+          
+          const results = await response.json();
+          
+          // Display results
+          displayEmotionResults(results, cameraFeedback, cameraEmotionBarContainer);
+          
+        } catch (error) {
+          console.error('Error:', error);
+          cameraFeedback.textContent = 'Error in live detection. Please try again.';
+          stopLiveDetection();
+        }
+      }, 1000); // Update every 1 second
+    }
+    
+    // Stop live emotion detection
+    function stopLiveDetection() {
+      isLiveDetectionRunning = false;
+      if (liveDetectionInterval) {
+        clearInterval(liveDetectionInterval);
+        liveDetectionInterval = null;
+      }
+    }
+    
+    // Clean up resources when page is unloaded
+    window.addEventListener('beforeunload', () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+      stopLiveDetection();
+    });
+    
+    // Initialize the application
+    async function init() {
+      await initCamera();
+    }
+    
+    // Start the app
+    init();
+  </script>
+</body>
+</html>
