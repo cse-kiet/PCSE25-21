@@ -1,3 +1,290 @@
-<!-- Emergency HTML -->
 <!DOCTYPE html>
-<html><head><title>Emergency</title></head><body><h1>Emergency Help</h1></body></html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindWell | Emergency Help</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --danger: #ff6b6b;
+            --success: #51cf66;
+            --warning: #fcc419;
+            --text: #2b2d42;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --modal-bg: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        .dark-mode {
+            --text: #f8f9fa;
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --modal-bg: #2d2d2d;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            transition: var(--transition);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(to right, var(--danger), #ff8e8e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(106, 17, 203, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(to right, var(--success), #69db7c);
+        }
+
+        .emergency-contact {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            animation: slideIn 0.5s ease-out;
+            will-change: transform;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .emergency-contact:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .emergency-contact:nth-child(2) { animation-delay: 0.1s; }
+        .emergency-contact:nth-child(3) { animation-delay: 0.2s; }
+        .emergency-contact:nth-child(4) { animation-delay: 0.3s; }
+
+        .emergency-contact strong {
+            color: var(--danger);
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .emergency-contact a {
+            color: var(--secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .emergency-contact a:hover {
+            text-decoration: underline;
+            color: var(--primary);
+        }
+
+        .emergency-contact i {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .info-box {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid var(--danger);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: var(--danger);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 99;
+            transition: var(--transition);
+        }
+
+        .dark-mode-toggle:hover {
+            transform: scale(1.1) rotate(10deg);
+        }
+
+        .dark-mode-toggle i {
+            font-size: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dark Mode Toggle -->
+    <div class="dark-mode-toggle" onclick="toggleDarkMode()">
+        <i id="darkIcon" class="fas fa-moon"></i>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <h1><i class="fas fa-ambulance"></i> Emergency Help</h1>
+
+        <div style="margin-bottom: 20px;">
+            <a href="/" class="btn">
+                <i class="fas fa-arrow-left"></i> Back to Main Menu
+            </a>
+        </div>
+
+        <div class="emergency-contact">
+            <strong><i class="fas fa-phone-alt"></i> Vandrevala Foundation Helpline</strong>
+            <p>Available 24/7 for depression, anxiety, and suicidal thoughts</p>
+            <p>☎️ <a href="tel:18602662345">1860-266-2345</a></p>
+        </div>
+
+        <div class="emergency-contact">
+            <strong><i class="fas fa-phone-alt"></i> iCall Psychosocial Helpline</strong>
+            <p>Mon-Sat, 8am-10pm | Email support available</p>
+            <p>☎️ <a href="tel:02225521111">022-25521111</a></p>
+        </div>
+
+        <div class="emergency-contact">
+            <strong><i class="fas fa-phone-alt"></i> National Mental Health Helpline</strong>
+            <p>Government-supported mental health services</p>
+            <p>☎️ <a href="tel:18005990019">1800-599-0019</a></p>
+        </div>
+
+        <div class="emergency-contact">
+            <strong><i class="fas fa-globe"></i> Crisis Text Line</strong>
+            <p>Text "HOME" to 741741 for 24/7 crisis counseling (India)</p>
+        </div>
+
+        <div class="info-box">
+            <p><i class="fas fa-info-circle"></i> <strong>Remember:</strong> You're not alone. Reaching out is a sign of strength, not weakness.</p>
+        </div>
+
+        <div class="action-buttons">
+            <a href="/" class="btn">
+                <i class="fas fa-arrow-left"></i> Back to Main Menu
+            </a>
+            <a href="/tips" class="btn btn-success">
+                <i class="fas fa-heart"></i> Self-Care Tips
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // ===== DARK MODE TOGGLE =====
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.getElementById('darkIcon');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        }
+
+        // Check for saved preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('darkIcon').classList.replace('fa-moon', 'fa-sun');
+        }
+
+        // Add click animation to emergency contacts
+        document.querySelectorAll('.emergency-contact').forEach(contact => {
+            contact.addEventListener('click', function() {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 200);
+            });
+        });
+    </script>
+</body>
+</html>
