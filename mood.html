@@ -1,3 +1,466 @@
-<!-- Mood Diary HTML -->
 <!DOCTYPE html>
-<html><head><title>Mood Diary</title></head><body><h1>Mood Diary</h1></body></html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindWell | Mood Diary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --danger: #ff6b6b;
+            --success: #51cf66;
+            --warning: #fcc419;
+            --text: #2b2d42;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        .dark-mode {
+            --text: #f8f9fa;
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            transition: var(--transition);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(106, 17, 203, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(to right, #6c757d, #5a6268);
+        }
+
+        .mood-form {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .mood-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .mood-option {
+            flex: 1;
+            min-width: 60px;
+            text-align: center;
+            padding: 15px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .mood-option.selected {
+            border-color: var(--primary);
+        }
+
+        .mood-option i {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .mood-1 { background-color: rgba(255, 107, 107, 0.1); }
+        .mood-2 { background-color: rgba(252, 196, 25, 0.1); }
+        .mood-3 { background-color: rgba(200, 200, 200, 0.1); }
+        .mood-4 { background-color: rgba(81, 207, 102, 0.1); }
+        .mood-5 { background-color: rgba(37, 117, 252, 0.1); }
+
+        .entries-container {
+            margin-top: 30px;
+        }
+
+        .entry {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .entry-date {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .entry-notes {
+            margin-top: 10px;
+        }
+
+        .no-entries {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: var(--primary);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 99;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            box-shadow: var(--shadow);
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .delete-entry {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dark-mode-toggle" onclick="toggleDarkMode()">
+        <i id="darkIcon" class="fas fa-moon"></i>
+    </div>
+
+    <div class="container">
+        <h1><i class="fas fa-book"></i> Mood Diary</h1>
+
+        <div style="margin-bottom: 20px;">
+            <a href="/" class="btn">
+                <i class="fas fa-arrow-left"></i> Back to Main Menu
+            </a>
+        </div>
+
+        <div class="mood-form">
+            <form id="moodForm">
+                <div class="form-group">
+                    <label for="entryDate">Date</label>
+                    <input type="date" id="entryDate" name="entryDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label>How are you feeling?</label>
+                    <div class="mood-options">
+                        <div class="mood-option mood-1" data-value="1">
+                            <i class="fas fa-sad-tear"></i>
+                            <div>Awful</div>
+                        </div>
+                        <div class="mood-option mood-2" data-value="2">
+                            <i class="fas fa-frown"></i>
+                            <div>Bad</div>
+                        </div>
+                        <div class="mood-option mood-3" data-value="3">
+                            <i class="fas fa-meh"></i>
+                            <div>Neutral</div>
+                        </div>
+                        <div class="mood-option mood-4" data-value="4">
+                            <i class="fas fa-smile"></i>
+                            <div>Good</div>
+                        </div>
+                        <div class="mood-option mood-5" data-value="5">
+                            <i class="fas fa-laugh"></i>
+                            <div>Great</div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="moodValue" name="moodValue" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="activities">What activities did you do today?</label>
+                    <input type="text" id="activities" name="activities" placeholder="e.g., Work, Exercise, Socializing">
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Notes</label>
+                    <textarea id="notes" name="notes" placeholder="How was your day? What affected your mood?"></textarea>
+                </div>
+
+                <div>
+                    <button type="submit" class="btn">
+                        <i class="fas fa-save"></i> Save Entry
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="entries-container">
+            <h2><i class="fas fa-history"></i> Your Entries</h2>
+            <div id="entriesList">
+                <!-- Entries will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i> Entry saved successfully!
+    </div>
+
+    <script>
+        // Initialize mood entries from localStorage or empty array
+        let moodEntries = JSON.parse(localStorage.getItem('moodEntries')) || [];
+        const entriesList = document.getElementById('entriesList');
+        const moodForm = document.getElementById('moodForm');
+        const toast = document.getElementById('toast');
+
+        // Load entries when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            renderEntries();
+            
+            // Set today's date as default
+            document.getElementById('entryDate').valueAsDate = new Date();
+        });
+
+        // Mood selection
+        document.querySelectorAll('.mood-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.mood-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                document.getElementById('moodValue').value = this.dataset.value;
+            });
+        });
+
+        // Form submission
+        moodForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const entry = {
+                id: Date.now(),
+                date: this.entryDate.value,
+                mood: parseInt(this.moodValue.value),
+                activities: this.activities.value,
+                notes: this.notes.value,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Add to entries array
+            moodEntries.push(entry);
+            
+            // Save to localStorage
+            localStorage.setItem('moodEntries', JSON.stringify(moodEntries));
+            
+            // Add to UI
+            addEntryToPage(entry);
+            
+            // Show toast
+            showToast('Entry saved successfully!');
+            
+
+            this.reset();
+            document.getElementById('entryDate').valueAsDate = new Date();
+            document.querySelectorAll('.mood-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+        });
+
+
+        function renderEntries() {
+            entriesList.innerHTML = '';
+            
+            if (moodEntries.length === 0) {
+                entriesList.innerHTML = `
+                    <div class="no-entries">
+                        <i class="fas fa-book-open" style="font-size: 50px; color: #ddd; margin-bottom: 15px;"></i>
+                        <p>No entries yet. Start by adding your first mood entry above.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+
+            moodEntries.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            moodEntries.forEach(entry => {
+                addEntryToPage(entry);
+            });
+        }
+
+        function addEntryToPage(entry) {
+            const date = new Date(entry.date);
+            const formattedDate = date.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            let moodIcon;
+            switch(entry.mood) {
+                case 1: moodIcon = 'fa-sad-tear'; break;
+                case 2: moodIcon = 'fa-frown'; break;
+                case 3: moodIcon = 'fa-meh'; break;
+                case 4: moodIcon = 'fa-smile'; break;
+                case 5: moodIcon = 'fa-laugh'; break;
+            }
+            
+            const entryEl = document.createElement('div');
+            entryEl.className = 'entry';
+            entryEl.innerHTML = `
+                <div class="entry-header">
+                    <div class="entry-date">${formattedDate}</div>
+                    <div><i class="fas ${moodIcon}"></i></div>
+                </div>
+                ${entry.activities ? `<div><strong>Activities:</strong> ${entry.activities}</div>` : ''}
+                ${entry.notes ? `<div class="entry-notes"><strong>Notes:</strong> ${entry.notes}</div>` : ''}
+                <button class="delete-entry" data-id="${entry.id}">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            `;
+            
+            entriesList.appendChild(entryEl);
+            
+     
+            entryEl.querySelector('.delete-entry').addEventListener('click', function() {
+                const id = parseInt(this.getAttribute('data-id'));
+                deleteEntry(id);
+            });
+        }
+
+    
+        function deleteEntry(id) {
+            moodEntries = moodEntries.filter(entry => entry.id !== id);
+            localStorage.setItem('moodEntries', JSON.stringify(moodEntries));
+            renderEntries();
+            showToast('Entry deleted');
+        }
+
+
+        function showToast(message) {
+            toast.querySelector('i').nextSibling.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.getElementById('darkIcon');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        }
+
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('darkIcon').classList.replace('fa-moon', 'fa-sun');
+        }
+    </script>
+</body>
+</html>
