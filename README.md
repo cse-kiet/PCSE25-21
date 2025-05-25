@@ -6,9 +6,9 @@
 3. Charu Singh
 
 ## Steps for Execution:
-1. [STEP 1]
-2. [STEP 2]
-   (Add more steps as needed)
+1. [STEP 1]For stress prediction click stress prediction- Take our assessment to evaluate your current stress levels and get personalized recommendations. 
+2. [STEP 2]For emotion detection click emotion detection- Upload an image or use your camera to analyze your facial expressions and emotional state
+3. [STEP 3]For mood analysis there is a mood diary- Track your daily moods, activities, and thoughts to identify patterns and triggers
 
 ## Checklist:
 1. Final Project Report
