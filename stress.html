@@ -1,83 +1,921 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MindWell | Stress Assessment</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --danger: #ff6b6b;
+            --success: #51cf66;
+            --warning: #fcc419;
+            --text: #2b2d42;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --modal-bg: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        .dark-mode {
+            --text: #f8f9fa;
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --modal-bg: #2d2d2d;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-            color: #2b2d42;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            transition: var(--transition);
+            min-height: 100vh;
             padding: 20px;
         }
+
         .container {
             max-width: 800px;
-            margin: auto;
-            background: white;
+            margin: 0 auto;
+            background: var(--card-bg);
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
         }
+
         h1 {
             text-align: center;
-            font-size: 2.2rem;
             margin-bottom: 30px;
-            background: linear-gradient(to right, #6a11cb, #2575fc);
+            background: linear-gradient(to right, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            font-size: 2.2rem;
         }
-        .question {
-            margin-bottom: 20px;
-            background: #f1f3f5;
-            padding: 15px;
-            border-radius: 10px;
-        }
-        .actions {
-            text-align: center;
-            margin-top: 30px;
-        }
-        button {
-            background: linear-gradient(to right, #6a11cb, #2575fc);
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
             color: white;
-            padding: 10px 25px;
             border: none;
+            padding: 12px 25px;
             border-radius: 50px;
             font-size: 16px;
+            font-weight: 500;
             cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+            margin: 5px;
         }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(106, 17, 203, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(to right, var(--danger), #ff8e8e);
+        }
+
+        .btn-success {
+            background: linear-gradient(to right, var(--success), #69db7c);
+        }
+
+        .question {
+            background: rgba(106, 17, 203, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            transition: var(--transition);
+        }
+
+        .question p {
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .question label {
+            margin-right: 15px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        input[type="radio"] {
+            margin-right: 8px;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        input[type="radio"]:checked {
+            border-color: var(--primary);
+        }
+
+        input[type="radio"]:checked::before {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+        }
+
         input[type="text"] {
             width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin: 10px 0 20px;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+   
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background: var(--modal-bg);
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-btn:hover {
+            color: var(--danger);
+        }
+
+        /* Psychologist Cards */
+        .psychologist {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary);
+        }
+
+        .psychologist strong {
+            font-size: 1.1rem;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .psychologist a {
+            color: var(--secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .psychologist a:hover {
+            text-decoration: underline;
+        }
+
+        .psychologist i {
+            margin-right: 8px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .loader-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .loader {
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        .loader-text {
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 25px 0 10px;
+            gap: 10px;
+        }
+
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: var(--primary);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 99;
+            transition: var(--transition);
+        }
+
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1><i class="fas fa-brain"></i> Stress Assessment</h1>
-    <form method="post" action="/predict" id="stressForm">
-        {% for i in range(questions|length) %}
-        <div class="question">
-            <p>{{ i+1 }}. {{ questions[i] }}</p>
-            <label><input type="radio" name="q{{ i }}" value="1" required> Yes</label>
-            <label><input type="radio" name="q{{ i }}" value="0"> No</label>
-        </div>
-        {% endfor %}
 
-        <div class="question">
-            <label for="location">Your City:</label>
-            <input type="text" name="location" id="location" placeholder="e.g., Delhi, Mumbai" required />
+    <div class="dark-mode-toggle" onclick="toggleDarkMode()">
+        <i id="darkIcon" class="fas fa-moon"></i>
+    </div>
+
+    <div id="loader" class="loader-container">
+        <div class="loader"></div>
+        <p class="loader-text">Analyzing your responses...</p>
+    </div>
+
+    
+    <div class="container">
+        <h1><i class="fas fa-brain"></i> MindWell Stress Assessment</h1>
+
+        <div style="margin-bottom: 20px;">
+            <a href="/" class="btn">
+                <i class="fas fa-arrow-left"></i> Back to Main Menu
+            </a>
         </div>
 
-        <div class="actions">
-            <button type="submit"><i class="fas fa-paper-plane"></i> Submit Assessment</button>
+        <form id="stressForm">
+            <!-- Question 1 -->
+            <div class="question">
+                <p>1. Have you had trouble sleeping recently?</p>
+                <label>
+                    <input type="radio" name="q0" value="1" required>
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="q0" value="0">
+                    No
+                </label>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="question">
+                <p>2. Do you feel overwhelmed by your responsibilities?</p>
+                <label>
+                    <input type="radio" name="q1" value="1" required>
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="q1" value="0">
+                    No
+                </label>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="question">
+                <p>3. Are you easily irritated or angered?</p>
+                <label>
+                    <input type="radio" name="q2" value="1" required>
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="q2" value="0">
+                    No
+                </label>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="question">
+                <p>4. Have you lost interest in activities you used to enjoy?</p>
+                <label>
+                    <input type="radio" name="q3" value="1" required>
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="q3" value="0">
+                    No
+                </label>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="question">
+                <p>5. Do you feel tired all the time?</p>
+                <label>
+                    <input type="radio" name="q4" value="1" required>
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="q4" value="0">
+                    No
+                </label>
+            </div>
+
+            <!-- Question 6 -->
+            <div class="question">
+                <p>6. Do you have difficulty concentrating?</p>
+                <label>
+                    <input type="radio" name="q5" value="1" required>
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="q5" value="0">
+                    No
+                </label>
+            </div>
+
+            <!-- Question 7 -->
+            <div class="question">
+                <p>7. Do you feel anxious most of the day?</p>
+                <label>
+                    <input type="radio" name="q6" value="1" required>
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="q6" value="0">
+                    No
+                </label>
+            </div>
+
+            <!-- Question 8 -->
+            <div class="question">
+                <p>8. Have your eating habits changed significantly?</p>
+                <label>
+                    <input type="radio" name="q7" value="1" required>
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="q7" value="0">
+                    No
+                </label>
+            </div>
+
+            <!-- Question 9 -->
+            <div class="question">
+                <p>9. Do you feel hopeless about the future?</p>
+                <label>
+                    <input type="radio" name="q8" value="1" required>
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="q8" value="0">
+                    No
+                </label>
+            </div>
+
+            <!-- Question 10 -->
+            <div class="question">
+                <p>10. Do you experience physical symptoms like headaches or stomachaches?</p>
+                <label>
+                    <input type="radio" name="q9" value="1" required>
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="q9" value="0">
+                    No
+                </label>
+            </div>
+
+            <!-- Question 11 -->
+            <div class="question">
+                <p>11. Do you avoid social interactions?</p>
+                <label>
+                    <input type="radio" name="q10" value="1" required>
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="q10" value="0">
+                    No
+                </label>
+            </div>
+
+            <!-- Question 12 -->
+            <div class="question">
+                <p>12. Do you feel restless or unable to sit still?</p>
+                <label>
+                    <input type="radio" name="q11" value="1" required>
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="q11" value="0">
+                    No
+                </label>
+            </div>
+
+            <!-- Question 13 -->
+            <div class="question">
+                <p>13. Do you have negative thoughts about yourself?</p>
+                <label>
+                    <input type="radio" name="q12" value="1" required>
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="q12" value="0">
+                    No
+                </label>
+            </div>
+
+            <!-- Question 14 -->
+            <div class="question">
+                <p>14. Do you feel like crying often?</p>
+                <label>
+                    <input type="radio" name="q13" value="1" required>
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="q13" value="0">
+                    No
+                </label>
+            </div>
+
+            <!-- Question 15 -->
+            <div class="question">
+                <p>15. Do you feel detached from reality?</p>
+                <label>
+                    <input type="radio" name="q14" value="1" required>
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="q14" value="0">
+                    No
+                </label>
+            </div>
+
+            <!-- Question 16 -->
+            <div class="question">
+                <p>16. Have you had thoughts of self-harm?</p>
+                <label>
+                    <input type="radio" name="q15" value="1" required>
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="q15" value="0">
+                    No
+                </label>
+            </div>
+
+            <!-- Question 17 -->
+            <div class="question">
+                <p>17. Do you feel like you've lost control of your life?</p>
+                <label>
+                    <input type="radio" name="q16" value="1" required>
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="q16" value="0">
+                    No
+                </label>
+            </div>
+
+            <!-- Question 18 -->
+            <div class="question">
+                <p>18. Do you use alcohol or drugs to cope?</p>
+                <label>
+                    <input type="radio" name="q17" value="1" required>
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="q17" value="0">
+                    No
+                </label>
+            </div>
+
+            <!-- Question 19 -->
+            <div class="question">
+                <p>19. Do you feel lonely even when with people?</p>
+                <label>
+                    <input type="radio" name="q18" value="1" required>
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="q18" value="0">
+                    No
+                </label>
+            </div>
+
+            <div class="question">
+                <p>20. Do you feel like you're failing at everything?</p>
+                <label>
+                    <input type="radio" name="q19" value="1" required>
+                    Yes
+                </label>
+                <label>
+                    <input type="radio" name="q19" value="0">
+                    No
+                </label>
+            </div>
+
+           
+            <div class="question">
+                <label for="location">
+                    <i class="fas fa-map-marker-alt"></i> <strong>Your Location (City):</strong>
+                </label>
+                <input type="text" id="location" name="location" required placeholder="e.g., Delhi, Mumbai, Noida, Ghaziabad">
+            </div>
+
+            <div class="action-buttons">
+                <button type="submit" class="btn">
+                    <i class="fas fa-chart-bar"></i> Get Results
+                </button>
+                <a href="/tips" class="btn btn-success">
+                    <i class="fas fa-heart"></i> Self-Care Tips
+                </a>
+                <a href="/emergency" class="btn btn-danger">
+                    <i class="fas fa-ambulance"></i> Emergency Help
+                </a>
+            </div>
+        </form>
+    </div>
+
+ 
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div id="modalResultContent"></div>
+            <div class="action-buttons" id="modalButtons"></div>
         </div>
-    </form>
-</div>
+    </div>
+
+    <script>
+       
+        const psychologists = {
+            "delhi": [
+                {
+                    "name": "Dr. Ananya Sharma",
+                    "specialty": "Anxiety & Depression",
+                    "phone": "011-2654 1234",
+                    "clinic": "MindCare Clinic, Connaught Place",
+                    "website": "mindcare-delhi.example.com"
+                },
+                {
+                    "name": "Dr. Rajiv Mehta",
+                    "specialty": "Stress Management",
+                    "phone": "011-2789 5678",
+                    "clinic": "HealMind Center, Saket",
+                    "website": "healmind-delhi.example.com"
+                },
+                {
+                    "name": "Dr. Priya Khanna",
+                    "specialty": "Cognitive Behavioral Therapy",
+                    "phone": "011-2345 6789",
+                    "clinic": "Tranquil Minds, Greater Kailash",
+                    "website": "tranquilminds-delhi.example.com"
+                }
+            ],
+            "mumbai": [
+                {
+                    "name": "Dr. Arjun Patel",
+                    "specialty": "Cognitive Therapy",
+                    "phone": "022-3344 5566",
+                    "clinic": "Peaceful Mind, Bandra",
+                    "website": "peacefulmind-mumbai.example.com"
+                },
+                {
+                    "name": "Dr. Neha Desai",
+                    "specialty": "Workplace Stress",
+                    "phone": "022-4455 6677",
+                    "clinic": "Serene Space, Andheri",
+                    "website": "serenespace-mumbai.example.com"
+                },
+                {
+                    "name": "Dr. Rohan Malhotra",
+                    "specialty": "Relationship Counseling",
+                    "phone": "022-5566 7788",
+                    "clinic": "Harmony Clinic, Colaba",
+                    "website": "harmony-mumbai.example.com"
+                }
+            ],
+            "noida": [
+                {
+                    "name": "Dr. Kirti Jain",
+                    "specialty": "Workplace Burnout",
+                    "phone": "0120-456 7890",
+                    "clinic": "Tranquil Souls, Sector 62",
+                    "website": "tranquilsouls-noida.example.com"
+                },
+                {
+                    "name": "Dr. Amit Verma",
+                    "specialty": "Anger Management",
+                    "phone": "0120-567 8901",
+                    "clinic": "Calm Horizons, Sector 18",
+                    "website": "calmhorizons.example.com"
+                }
+            ],
+            "ghaziabad": [
+                {
+                    "name": "Dr. Sanjay Gupta",
+                    "specialty": "Family Counseling",
+                    "phone": "0120-123 4567",
+                    "clinic": "Happy Minds Clinic, Vaishali",
+                    "website": "happyminds-ghaziabad.example.com"
+                },
+                {
+                    "name": "Dr. Meena Kapoor",
+                    "specialty": "Teenage Stress",
+                    "phone": "0120-234 5678",
+                    "clinic": "Youth Wellness Center, Raj Nagar",
+                    "website": "youthwellness.example.com"
+                }
+            ],
+            "bangalore": [
+                {
+                    "name": "Dr. Priya Reddy",
+                    "specialty": "Mindfulness",
+                    "phone": "080-4455 6677",
+                    "clinic": "Serene Space, Koramangala",
+                    "website": "serenespace-bangalore.example.com"
+                },
+                {
+                    "name": "Dr. Rahul Sharma",
+                    "specialty": "Digital Detox Therapy",
+                    "phone": "080-5566 7788",
+                    "website": "digitaldetox.example.com"
+                }
+            ],
+            "hyderabad": [
+                {
+                    "name": "Dr. Anjali Rao",
+                    "specialty": "Anxiety Disorders",
+                    "phone": "040-3344 5566",
+                    "clinic": "Peaceful Living, Banjara Hills",
+                    "website": "peacefulliving-hyderabad.example.com"
+                }
+            ],
+            "pune": [
+                {
+                    "name": "Dr. Sameer Joshi",
+                    "specialty": "Work-Life Balance",
+                    "phone": "020-4455 6677",
+                    "clinic": "Balanced Life Clinic, Koregaon Park"
+                }
+            ]
+        };
+
+      
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.getElementById('darkIcon');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        }
+
+      
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('darkIcon').classList.replace('fa-moon', 'fa-sun');
+        }
+
+  
+        document.getElementById('stressForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+       
+            document.getElementById('loader').style.display = 'flex';
+
+            
+            const answers = [];
+            for (let i = 0; i < 20; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if (!selected) {
+                    alert(`Please answer question ${i+1}`);
+                    document.getElementById('loader').style.display = 'none';
+                    return;
+                }
+                answers.push(parseInt(selected.value));
+            }
+
+            const location = document.getElementById('location').value.trim().toLowerCase();
+            if (!location) {
+                alert('Please enter your location');
+                document.getElementById('loader').style.display = 'none';
+                return;
+            }
+
+        
+            setTimeout(function() {
+             
+                const score = answers.reduce((a, b) => a + b, 0);
+                
+              
+                let stressLevel = "low";
+                if (score >= 15) stressLevel = "very high";
+                else if (score >= 10) stressLevel = "high";
+                else if (score >= 5) stressLevel = "moderate";
+                
+               
+                let therapists = [];
+                for (const city in psychologists) {
+                    if (location.includes(city)) {
+                        therapists = therapists.concat(psychologists[city]);
+                    }
+                }
+
+                // If no therapists found for exact city, show some from nearby cities
+                if (therapists.length === 0) {
+                    if (location.includes('delhi') || location.includes('noida') || location.includes('ghaziabad')) {
+                        therapists = therapists.concat(psychologists['delhi'])
+                                               .concat(psychologists['noida'])
+                                               .concat(psychologists['ghaziabad']);
+                    } else if (location.includes('mumbai') || location.includes('pune')) {
+                        therapists = therapists.concat(psychologists['mumbai'])
+                                               .concat(psychologists['pune']);
+                    } else if (location.includes('bangalore') || location.includes('hyderabad')) {
+                        therapists = therapists.concat(psychologists['bangalore'])
+                                               .concat(psychologists['hyderabad']);
+                    }
+                }
+
+                
+                therapists = therapists.filter((v, i, a) => a.findIndex(t => t.phone === v.phone) === i);
+
+               
+                showResult({
+                    score: score,
+                    stressLevel: stressLevel,
+                    therapists: therapists.slice(0, 3), // Show max 3 therapists
+                    location: location.charAt(0).toUpperCase() + location.slice(1)
+                });
+            }, 1500);
+        });
+
+        function showResult(response) {
+            const modal = document.getElementById('resultModal');
+            const content = document.getElementById('modalResultContent');
+            const buttons = document.getElementById('modalButtons');
+
+         
+            document.getElementById('loader').style.display = 'none';
+
+         
+            let resultMessage = "";
+            let resultColor = "";
+            
+            if (response.stressLevel === "very high") {
+                resultMessage = `<i class="fas fa-exclamation-triangle"></i> Very High Stress Detected (${response.score}/20)`;
+                resultColor = "var(--danger)";
+            } else if (response.stressLevel === "high") {
+                resultMessage = `<i class="fas fa-exclamation-circle"></i> High Stress Detected (${response.score}/20)`;
+                resultColor = "#ff8e8e";
+            } else if (response.stressLevel === "moderate") {
+                resultMessage = `<i class="fas fa-info-circle"></i> Moderate Stress Detected (${response.score}/20)`;
+                resultColor = "var(--warning)";
+            } else {
+                resultMessage = `<i class="fas fa-check-circle"></i> Low Stress Detected (${response.score}/20)`;
+                resultColor = "var(--success)";
+            }
+
+            content.innerHTML = `
+                <h2 style="color: ${resultColor}; margin-bottom: 15px; text-align: center;">
+                    ${resultMessage}
+                </h2>
+                <p style="margin-bottom: 20px;">${getStressMessage(response.stressLevel)}</p>
+
+                ${response.therapists.length ? 
+                    `<p>Here are mental health professionals in ${response.location} who can help:</p>
+                    ${response.therapists.map(doc => `
+                    <div class="psychologist">
+                        <strong><i class="fas fa-user-md"></i> ${doc.name}</strong>
+                        <div><i class="fas fa-stethoscope"></i> ${doc.specialty}</div>
+                        <div><i class="fas fa-map-marker-alt"></i> ${doc.clinic || 'Private Practice'}</div>
+                        <div><i class="fas fa-phone"></i> <a href="tel:${doc.phone}">${doc.phone}</a></div>
+                        ${doc.website ? `<div><i class="fas fa-globe"></i> <a href="https://${doc.website}" target="_blank">${doc.website}</a></div>` : ''}
+                    </div>
+                    `).join('')}`
+                    :
+                    `<p style="text-align: center;">No therapists found in ${response.location}. Try searching for a nearby major city.</p>`
+                }
+
+                <div style="margin-top: 20px; padding: 15px; background: rgba(106, 17, 203, 0.1); border-radius: 8px;">
+                    <p><i class="fas fa-lightbulb"></i> <strong>Next Steps:</strong> ${getNextSteps(response.stressLevel)}</p>
+                </div>
+            `;
+
+            buttons.innerHTML = `
+                <button onclick="window.location.href='/tips'" class="btn btn-success">
+                    <i class="fas fa-heart"></i> Self-Care Tips
+                </button>
+                ${response.stressLevel === "very high" ? 
+                    `<button onclick="window.location.href='/emergency'" class="btn btn-danger">
+                        <i class="fas fa-ambulance"></i> Immediate Help
+                    </button>` 
+                    : ''
+                }
+            `;
+
+            modal.style.display = 'block';
+        }
+
+        function getStressMessage(level) {
+            const messages = {
+                "very high": "Your responses indicate severe stress levels that may require professional intervention. Please consider reaching out to a mental health professional immediately.",
+                "high": "Your responses suggest you're experiencing significant stress. Professional support could help you manage these feelings effectively.",
+                "moderate": "You're showing some signs of stress that could benefit from attention and self-care strategies.",
+                "low": "Your responses indicate healthy stress management. Keep up the good work with your self-care practices!"
+            };
+            return messages[level] || "";
+        }
+
+        // Helper function for next steps
+        function getNextSteps(level) {
+            const steps = {
+                "very high": "Consider contacting one of these professionals immediately. Your mental health is important.",
+                "high": "We recommend scheduling an appointment with a mental health professional soon.",
+                "moderate": "Try our self-care tips and consider checking in with a professional if these feelings persist.",
+                "low": "Continue with your healthy habits and check our self-care tips for maintaining wellness."
+            };
+            return steps[level] || "";
+        }
+
+      
+        function closeModal() {
+            document.getElementById('resultModal').style.display = 'none';
+        }
+
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('resultModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
 </body>
 </html>
